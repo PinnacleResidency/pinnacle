@@ -283,11 +283,13 @@ export function SiteHeader() {
         {openMenu ? (
           <div
             data-mega-panel=""
-            className="absolute inset-x-0 top-full z-50 hidden border-t border-[#e8e8e8] bg-white lg:block"
+            className="absolute inset-x-0 top-full z-50 hidden lg:block"
+            style={{ paddingInline: fluid(20, 100), paddingTop: 8 }}
             onMouseEnter={clearCloseTimer}
           >
             <MegaMenu
               key={openMenu}
+              title={megaMenus[openMenu].label}
               items={megaMenus[openMenu].items}
               showCard={megaMenus[openMenu].showCard}
               onNavigate={() => setOpenMenu(null)}

@@ -2,9 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
 
 import { fluid, fluidText } from "@/lib/fluid"
 import type { MegaItem } from "@/lib/site-nav"
+import { cn } from "@/lib/utils"
 
 function closeAfterClick(onNavigate?: () => void) {
   window.setTimeout(() => onNavigate?.(), 0)
@@ -13,121 +15,134 @@ function closeAfterClick(onNavigate?: () => void) {
 function StrategyCard({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div
-      className="absolute inset-y-0 right-0 bg-[#fff9ed]"
+      className="relative shrink-0 overflow-hidden rounded-[20px]"
       style={{
-        width: fluid(300, 800),
-        paddingInline: fluid(20, 100),
-        paddingBlock: fluid(16, 24),
+        width: fluid(220, 520),
+        aspectRatio: "600 / 380",
       }}
     >
-      <div className="relative size-full overflow-hidden rounded-[20px]">
-        <div className="absolute inset-0 overflow-hidden rounded-[20px]">
-          <Image
-            src="/images/nav/strategy-session.jpg"
-            alt=""
-            width={1044}
-            height={1863}
-            className="absolute top-[-151.39%] left-[0.01%] h-[278.85%] w-full max-w-none"
-          />
-          <div className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[rgba(15,15,15,0.75)] to-[#0d1a0b]" />
+      <Image
+        src="/images/nav/strategy-session.jpg"
+        alt=""
+        width={1044}
+        height={1863}
+        className="absolute top-[-151.39%] left-[0.01%] h-[278.85%] w-full max-w-none"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(15,15,15,0.75)] to-[#0d1a0b]" />
+
+      <div
+        className="absolute inset-x-0 bottom-0 flex flex-col items-start"
+        style={{
+          padding: fluid(20, 32),
+          gap: fluid(16, 24),
+        }}
+      >
+        <div className="flex w-full flex-col gap-2.5">
+          <p className="font-medium text-[#aaa]" style={fluidText(20, 28, 24, 32)}>
+            Book a <span className="text-white">Strategy Session</span>
+          </p>
+          <p className="text-[#ddd]" style={fluidText(14, 18, 18, 22)}>
+            A focused conversation about your background and options.
+          </p>
         </div>
 
-        <div
-          className="absolute flex flex-col items-start"
-          style={{
-            bottom: fluid(24, 40),
-            left: fluid(20, 40),
-            width: fluid(200, 400),
-            gap: fluid(20, 32),
-          }}
+        <Link
+          href="/book"
+          onClick={() => closeAfterClick(onNavigate)}
+          className="inline-flex items-center gap-2.5 border-b border-solid border-white font-medium text-white"
+          style={fluidText(16, 18, 20, 24)}
         >
-          <div className="flex w-full flex-col gap-2.5">
-            <p
-              className="font-medium text-[#aaa]"
-              style={fluidText(24, 36, 28, 40)}
-            >
-              Book a{" "}
-              <span className="text-white">Strategy Session</span>
-            </p>
-            <p className="text-[#ddd]" style={fluidText(16, 20, 20, 24)}>
-              A focused conversation about your background and options.
-            </p>
-          </div>
-
-          <Link
-            href="/book"
-            onClick={() => closeAfterClick(onNavigate)}
-            className="inline-flex items-center gap-2.5 border-b border-solid border-white font-medium text-white"
-            style={fluidText(16, 18, 22, 24)}
-          >
-            Get Started
-            <Image
-              src="/images/nav/arrow-up-right-white.svg"
-              alt=""
-              width={20}
-              height={20}
-              unoptimized
-              className="block size-5 max-w-none"
-            />
-          </Link>
-        </div>
+          Get Started
+          <Image
+            src="/images/nav/arrow-up-right-white.svg"
+            alt=""
+            width={20}
+            height={20}
+            unoptimized
+            className="block size-5 max-w-none"
+          />
+        </Link>
       </div>
     </div>
   )
 }
 
 export function MegaMenu({
+  title,
   items,
   showCard,
   onNavigate,
 }: {
+  title: string
   items: readonly MegaItem[]
   showCard?: boolean
   onNavigate?: () => void
 }) {
+  const [activeHref, setActiveHref] = useState(items[0]?.href)
+  const active = items.find((item) => item.href === activeHref) ?? items[0]
+
   return (
     <div
-      className="relative bg-white"
+      className="flex w-full items-start overflow-hidden rounded-[24px] border border-[#def2d9] bg-[#f9fff8]"
       style={{
-        minHeight: showCard ? fluid(320, 428) : undefined,
+        gap: fluid(24, 40),
+        padding: fluid(20, 40),
       }}
     >
-      <nav
-        className="relative z-10 flex flex-col items-start"
-        style={{
-          paddingInline: fluid(20, 100),
-          paddingTop: fluid(24, 40),
-          paddingBottom: fluid(24, 40),
-          gap: fluid(16, 20),
-        }}
+      <div
+        className="flex min-w-0 flex-1 flex-col"
+        style={{ gap: fluid(20, 32) }}
       >
-        {items.map((item) => (
-          <Link
-            key={item.href + item.label}
-            href={item.href}
-            onClick={() => closeAfterClick(onNavigate)}
-            className="inline-flex items-center text-[#202020] transition-opacity hover:opacity-70"
-            style={{
-              ...fluidText(18, 24, 24, 32),
-              gap: fluid(8, 12),
-            }}
-          >
-            {item.label}
-            <Image
-              src="/images/nav/arrow-up-right.svg"
-              alt=""
-              width={50}
-              height={50}
-              unoptimized
-              className="block max-w-none shrink-0"
-              style={{
-                width: fluid(18, 24),
-                height: fluid(18, 24),
-              }}
-            />
-          </Link>
-        ))}
-      </nav>
+        <p
+          className="font-medium text-[#1c2f00]"
+          style={fluidText(22, 28, 26, 32)}
+        >
+          {title}
+        </p>
+        <ul className="flex flex-col" style={{ gap: fluid(14, 20) }}>
+          {items.map((item) => {
+            const isActive = item.href === active?.href
+
+            return (
+              <li key={item.href + item.label}>
+                <Link
+                  href={item.href}
+                  onClick={() => closeAfterClick(onNavigate)}
+                  onFocus={() => setActiveHref(item.href)}
+                  onMouseEnter={() => setActiveHref(item.href)}
+                  className={cn(
+                    "inline-flex items-center underline-offset-4 transition-colors",
+                    isActive
+                      ? "text-[#489832] underline"
+                      : "text-[#202020] hover:text-[#489832] hover:underline"
+                  )}
+                  style={{
+                    ...fluidText(18, 22, 24, 28),
+                    gap: fluid(8, 12),
+                  }}
+                >
+                  {item.label}
+                  <Image
+                    src="/images/nav/arrow-up-right.svg"
+                    alt=""
+                    width={50}
+                    height={50}
+                    unoptimized
+                    className={cn(
+                      "block max-w-none shrink-0",
+                      isActive && "opacity-80"
+                    )}
+                    style={{
+                      width: fluid(16, 20),
+                      height: fluid(16, 20),
+                    }}
+                  />
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
 
       {showCard ? <StrategyCard onNavigate={onNavigate} /> : null}
     </div>
