@@ -1,0 +1,21 @@
+import { Cta } from "@/components/home/cta"
+
+export function AboutCta() {
+  return (
+    <Cta
+      headingMuted="Ready to Find Out "
+      headingAccent="Where You Stand?"
+      accentNowrap={false}
+      accentClassName="text-[#1c2f00] lg:text-[#121c0f]"
+      copy="An honest assessment of your profile and proposed endeavor against the Dhanasar criteria."
+      image={{
+        src: "/images/cta/capitol.jpg",
+        alt: "United States Capitol",
+        width: 1200,
+        height: 1800,
+        heightPct: "203.12%",
+        topPct: "-36.98%",
+      }}
+    />
+  )
+}

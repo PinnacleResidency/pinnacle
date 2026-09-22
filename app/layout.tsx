@@ -1,15 +1,21 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata } from "next"
+import { Geist_Mono } from "next/font/google"
 
 import "./globals.css"
+import { SmoothScroll } from "@/components/layout/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+import { cn } from "@/lib/utils"
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "Pinnacle Residency",
+  description:
+    "Strategic immigration consultancy for accomplished professionals pursuing EB-1A and EB-2 NIW pathways.",
+}
 
 export default function RootLayout({
   children,
@@ -20,10 +26,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn("antialiased font-sans", fontMono.variable)}
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body suppressHydrationWarning>
+        <ThemeProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+        </ThemeProvider>
       </body>
     </html>
   )
