@@ -1,4 +1,5 @@
 import Image from "next/image"
+import type { CSSProperties } from "react"
 
 import { BookStrategyButton } from "@/components/cta/book-strategy-button"
 import { fluid, fluidText } from "@/lib/fluid"
@@ -63,6 +64,7 @@ export function Cta({
   accentClassName = "text-[#1c2f00]",
   copy = "Let's discuss your timeline and build a petition strategy that highlights your real value.",
   mobileCopy,
+  mobileCopyStyle,
   image = homeImage,
 }: {
   headingMuted?: string
@@ -72,6 +74,7 @@ export function Cta({
   accentClassName?: string
   copy?: string
   mobileCopy?: string
+  mobileCopyStyle?: CSSProperties
   image?: CtaImage
 } = {}) {
   const accent = (
@@ -147,7 +150,10 @@ export function Cta({
           className="flex w-full flex-col items-start lg:hidden"
           style={{ gap: fluid(40, 40) }}
         >
-          <p className="w-full text-[#606060]" style={fluidText(20, 20, 24, 24)}>
+          <p
+            className="w-full text-[#606060]"
+            style={mobileCopyStyle ?? fluidText(20, 20, 24, 24)}
+          >
             {mobileCopy ?? copy}
           </p>
           <BookStrategyButton />

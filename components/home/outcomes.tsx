@@ -43,8 +43,8 @@ export function Outcomes() {
           }}
         >
           <h2 className="w-full font-medium" style={fluidText(44, 60, 45, 68)}>
-            <span>Proven Outcomes </span>
-            <span className="text-[#707070]">Across Every Field</span>
+            <span className="block">Proven Outcomes</span>
+            <span className="block text-[#707070]">Across Every Field</span>
           </h2>
           <p className="w-full" style={fluidText(18, 20, 22, 24)}>
             Discover how professionals, researchers, and founders successfully

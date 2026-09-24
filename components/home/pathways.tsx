@@ -112,15 +112,16 @@ export function Pathways() {
             marginBottom: fluid(40, 60),
           }}
         >
-          <h2 className="w-full font-medium" style={fluidText(44, 60, 45, 68)}>
-            <span className="whitespace-nowrap text-[#707070]">
-              Pathways Designed for
-            </span>
-            <br />
-            <span className="whitespace-nowrap">
-              <span className="text-[#1c2f00]">Your Career</span>
-              <span className="text-[#707070]"> Profile</span>
-            </span>
+          <h2
+            className="w-full font-medium"
+            style={{
+              ...fluidText(44, 60, 45, 68),
+              maxWidth: fluid(380, 720),
+            }}
+          >
+            <span className="text-[#707070]">Pathways Designed for </span>
+            <span className="text-[#1c2f00]">Your Career</span>
+            <span className="text-[#707070]"> Profile</span>
           </h2>
           <p
             className="w-full text-[#606060]"

@@ -27,7 +27,7 @@ export function CaseStudiesListing() {
       <div
         className="relative mx-auto flex w-full max-w-[1512px] flex-col"
         style={{
-          paddingTop: fluid(150, 240),
+          paddingTop: fluid(100, 140),
           paddingBottom: fluid(40, 88),
           gap: fluid(40, 40),
         }}

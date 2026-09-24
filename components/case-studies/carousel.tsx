@@ -167,7 +167,7 @@ function ArrowButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={direction === "prev" ? "Previous case studies" : "Next case studies"}
-      className="flex shrink-0 items-center justify-center rounded-[32px] border border-solid border-[#47a62d] bg-[#489832] disabled:opacity-40"
+      className="flex shrink-0 cursor-pointer items-center justify-center rounded-[32px] border border-solid border-[#47a62d] bg-[#489832] disabled:cursor-not-allowed disabled:opacity-40"
       style={{
         width: fluid(42, 54),
         height: fluid(42, 54),

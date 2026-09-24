@@ -33,7 +33,7 @@ export function CaseStudyHero({ study }: { study: CaseStudy }) {
         className="relative mx-auto w-full max-w-[1512px]"
         style={{
           paddingInline: fluid(24, 120),
-          paddingTop: fluid(120, 200),
+          paddingTop: fluid(100, 140),
           paddingBottom: fluid(58, 60),
         }}
       >

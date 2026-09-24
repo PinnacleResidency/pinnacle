@@ -45,14 +45,14 @@ export function BlogListing({
         className="relative mx-auto flex w-full max-w-[1512px] flex-col"
         style={{
           paddingInline: fluid(24, 121),
-          paddingTop: fluid(120, 240),
+          paddingTop: fluid(100, 140),
           paddingBottom: fluid(72, 120),
         }}
       >
         <h1
           className="w-full font-medium"
           style={{
-            ...fluidText(56, 72, 52, 70),
+            ...fluidText(49, 72, 52, 70),
             maxWidth: fluid(392, 1013),
           }}
         >

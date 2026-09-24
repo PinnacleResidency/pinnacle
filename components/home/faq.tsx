@@ -30,7 +30,7 @@ export function Faq({
           className="relative flex w-full min-w-0 flex-col justify-between overflow-hidden rounded-[24px] border border-solid border-[#489832] bg-[#489832] lg:max-w-[472px] lg:flex-[472]"
           style={{
             minHeight: compact ? fluid(350, 450) : fluid(420, 620),
-            padding: fluid(28, 40),
+            padding: fluid(20, 40),
           }}
         >
           <Image
@@ -49,10 +49,8 @@ export function Faq({
             }}
           >
             <span className="lg:hidden">
-              <span className="whitespace-nowrap">
-                <span className="text-[#beffac]">Frequently </span>
-                <span className="text-white">Asked</span>
-              </span>
+              <span className="text-[#beffac]">Frequently </span>
+              <span className="text-white">Asked</span>
               <span className="mt-0 block text-[#beffac]">Questions</span>
             </span>
             <span className="hidden lg:block">

@@ -27,7 +27,7 @@ export function FaqHero() {
         className="relative mx-auto w-full max-w-[1512px]"
         style={{
           paddingInline: fluid(24, 120),
-          paddingTop: fluid(120, 240),
+          paddingTop: fluid(100, 140),
           paddingBottom: fluid(48, 80),
         }}
       >

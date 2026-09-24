@@ -1,4 +1,5 @@
 import { Cta } from "@/components/home/cta"
+import { fluidText } from "@/lib/fluid"
 
 export function CaseStudiesCta() {
   return (
@@ -8,6 +9,7 @@ export function CaseStudiesCta() {
       accentFirst
       accentNowrap={false}
       copy="Book a strategy session and let's find out where your case actually stands."
+      mobileCopyStyle={fluidText(18, 18, 22, 22)}
       image={{
         src: "/images/cta/liberty-skyline.jpg",
         alt: "Statue of Liberty and the New York City skyline",

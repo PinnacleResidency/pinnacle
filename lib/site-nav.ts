@@ -17,7 +17,7 @@ export const megaMenus: Record<
   about: {
     id: "about",
     label: "About us",
-    showCard: false,
+    showCard: true,
     items: [
       { label: "About Pinnacle", href: "/about" },
       { label: "Contact Us", href: "/book" },

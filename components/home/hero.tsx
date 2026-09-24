@@ -85,12 +85,14 @@ function HeroStats() {
 }
 
 function StampCluster() {
+  const width = fluid(358, 593)
+
   return (
     <div
       className="relative mx-auto"
       style={{
-        width: fluid(358, 593),
-        height: fluid(378, 718),
+        width,
+        height: `calc(718 * (${width}) / 593)`,
       }}
     >
       <div

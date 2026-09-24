@@ -36,7 +36,7 @@ export function PathwayHero({ content }: { content: PathwayContent }) {
         className="relative mx-auto flex w-full max-w-[1512px] flex-col lg:flex-row lg:items-start lg:justify-between"
         style={{
           paddingInline: fluid(24, 120),
-          paddingTop: fluid(180, 250),
+          paddingTop: fluid(100, 140),
           paddingBottom: fluid(55, 130),
           gap: fluid(60, 87),
         }}
@@ -51,7 +51,6 @@ export function PathwayHero({ content }: { content: PathwayContent }) {
           style={{
             maxWidth: fluid(392, 585),
             gap: fluid(40, 40),
-            paddingTop: fluid(0, 50),
           }}
         >
           <div

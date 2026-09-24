@@ -12,36 +12,59 @@ function closeAfterClick(onNavigate?: () => void) {
   window.setTimeout(() => onNavigate?.(), 0)
 }
 
-function StrategyCard({ onNavigate }: { onNavigate?: () => void }) {
+export function StrategyCard({
+  variant = "desktop",
+  onNavigate,
+}: {
+  variant?: "desktop" | "mobile"
+  onNavigate?: () => void
+}) {
+  const mobile = variant === "mobile"
+
   return (
     <div
-      className="relative shrink-0 overflow-hidden rounded-[20px]"
-      style={{
-        width: fluid(220, 520),
-        aspectRatio: "600 / 380",
-      }}
+      className="relative overflow-hidden rounded-[20px]"
+      style={
+        mobile
+          ? { width: "100%", aspectRatio: "420 / 450" }
+          : {
+              width: fluid(220, 520),
+              aspectRatio: "600 / 380",
+            }
+      }
     >
       <Image
         src="/images/nav/strategy-session.jpg"
         alt=""
         width={1044}
         height={1863}
-        className="absolute top-[-151.39%] left-[0.01%] h-[278.85%] w-full max-w-none"
+        className={cn(
+          "absolute left-0 w-full max-w-none",
+          mobile
+            ? "top-[-14.21%] h-[114.21%]"
+            : "top-[-151.39%] left-[0.01%] h-[278.85%]"
+        )}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[rgba(15,15,15,0.75)] to-[#0d1a0b]" />
 
       <div
         className="absolute inset-x-0 bottom-0 flex flex-col items-start"
         style={{
-          padding: fluid(20, 32),
-          gap: fluid(16, 24),
+          padding: mobile ? 24 : fluid(20, 32),
+          gap: mobile ? 32 : fluid(16, 24),
         }}
       >
         <div className="flex w-full flex-col gap-2.5">
-          <p className="font-medium text-[#aaa]" style={fluidText(20, 28, 24, 32)}>
+          <p
+            className="font-medium text-[#aaa]"
+            style={mobile ? fluidText(32, 32, 40, 40) : fluidText(20, 28, 24, 32)}
+          >
             Book a <span className="text-white">Strategy Session</span>
           </p>
-          <p className="text-[#ddd]" style={fluidText(14, 18, 18, 22)}>
+          <p
+            className="text-[#ddd]"
+            style={mobile ? fluidText(18, 18, 22, 22) : fluidText(14, 18, 18, 22)}
+          >
             A focused conversation about your background and options.
           </p>
         </div>
@@ -83,15 +106,15 @@ export function MegaMenu({
 
   return (
     <div
-      className="flex w-full items-start overflow-hidden rounded-[24px] border border-[#def2d9] bg-[#f9fff8]"
-      style={{
-        gap: fluid(24, 40),
-        padding: fluid(20, 40),
-      }}
+      className="flex w-full items-stretch overflow-hidden rounded-[24px] border border-[#e8e8e8]"
+      style={{ gap: 0 }}
     >
       <div
-        className="flex min-w-0 flex-1 flex-col"
-        style={{ gap: fluid(20, 32) }}
+        className="flex min-w-0 flex-1 flex-col bg-white"
+        style={{
+          gap: fluid(20, 32),
+          padding: fluid(20, 40),
+        }}
       >
         <p
           className="font-medium text-[#1c2f00]"
@@ -144,7 +167,14 @@ export function MegaMenu({
         </ul>
       </div>
 
-      {showCard ? <StrategyCard onNavigate={onNavigate} /> : null}
+      {showCard ? (
+        <div
+          className="flex shrink-0 items-center justify-center bg-[#fff9ed]"
+          style={{ padding: fluid(20, 40) }}
+        >
+          <StrategyCard onNavigate={onNavigate} />
+        </div>
+      ) : null}
     </div>
   )
 }

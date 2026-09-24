@@ -7,7 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { Logo } from "@/components/branding/logo"
 import { GetStartedButton } from "@/components/cta/get-started-button"
-import { MegaMenu } from "@/components/layout/mega-menu"
+import { MegaMenu, StrategyCard } from "@/components/layout/mega-menu"
 import {
   Sheet,
   SheetClose,
@@ -124,45 +124,60 @@ function MobileNav() {
         </SheetHeader>
 
         {drilldown ? (
-          <nav className="flex flex-col gap-6 px-5 pt-8">
-            <p
-              className="font-medium text-[#124a0a]"
-              style={fluidText(18, 18, 20, 20)}
-            >
-              {drilldown.label}
-            </p>
-            {drilldown.items.map((item) => (
-              <SheetClose
-                key={item.label}
-                nativeButton={false}
-                render={<Link href={item.href} />}
-                className="text-left text-[#606060]"
+          <>
+            <nav className="flex flex-col gap-6 px-5 pt-8">
+              <p
+                className="font-medium text-[#124a0a]"
                 style={fluidText(18, 18, 20, 20)}
               >
-                {item.label}
-              </SheetClose>
-            ))}
-          </nav>
+                {drilldown.label}
+              </p>
+              {drilldown.items.map((item) => (
+                <SheetClose
+                  key={item.label}
+                  nativeButton={false}
+                  render={<Link href={item.href} />}
+                  className="text-left text-[#606060]"
+                  style={fluidText(18, 18, 20, 20)}
+                >
+                  {item.label}
+                </SheetClose>
+              ))}
+            </nav>
+            {drilldown.showCard ? (
+              <div className="mt-auto bg-[#fff9ed] px-2.5 py-[25px]">
+                <StrategyCard
+                  variant="mobile"
+                  onNavigate={() => handleOpenChange(false)}
+                />
+              </div>
+            ) : (
+              <div className="mt-auto px-5 py-8">
+                <GetStartedButton className="w-full" />
+              </div>
+            )}
+          </>
         ) : (
-          <nav className="flex flex-col gap-8 px-5 pt-8">
-            {menus.map((menu) => (
-              <button
-                key={menu.id}
-                type="button"
-                onClick={() => setView(menu.id)}
-                className="flex w-full items-center justify-between bg-transparent text-left font-medium text-[#124a0a]"
-                style={fluidText(18, 18, 20, 20)}
-              >
-                {menu.label}
-                <ChevronRightIcon className="size-5 text-[#606060]" />
-              </button>
-            ))}
-          </nav>
+          <>
+            <nav className="flex flex-col gap-8 px-5 pt-8">
+              {menus.map((menu) => (
+                <button
+                  key={menu.id}
+                  type="button"
+                  onClick={() => setView(menu.id)}
+                  className="flex w-full items-center justify-between bg-transparent text-left font-medium text-[#124a0a]"
+                  style={fluidText(18, 18, 20, 20)}
+                >
+                  {menu.label}
+                  <ChevronRightIcon className="size-5 text-[#606060]" />
+                </button>
+              ))}
+            </nav>
+            <div className="mt-auto px-5 py-8">
+              <GetStartedButton className="w-full" />
+            </div>
+          </>
         )}
-
-        <div className="mt-auto px-5 py-8">
-          <GetStartedButton className="w-full" />
-        </div>
       </SheetContent>
     </Sheet>
   )

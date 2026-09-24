@@ -1,8 +1,11 @@
-"use client"
-
 import Image from "next/image"
-import { useState } from "react"
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { fluid, fluidText } from "@/lib/fluid"
 import type { FaqItem } from "@/lib/pathways"
 
@@ -32,6 +35,19 @@ const homeItems: readonly FaqItem[] = [
   },
 ]
 
+function FaqIcon({ open }: { open: boolean }) {
+  return (
+    <Image
+      src={open ? "/images/faq/minus.svg" : "/images/faq/plus.svg"}
+      alt=""
+      width={22}
+      height={22}
+      unoptimized
+      className="block size-[22px] max-w-none shrink-0"
+    />
+  )
+}
+
 export function FaqList({
   items = homeItems,
   inset = false,
@@ -39,63 +55,57 @@ export function FaqList({
   items?: readonly FaqItem[]
   inset?: boolean
 }) {
-  const [open, setOpen] = useState(0)
+  const itemPad = {
+    paddingInline: inset ? fluid(12, 36) : 0,
+    ["--faq-pb" as string]: fluid(28, 32),
+  }
 
   return (
-    <ul className="flex w-full list-none flex-col">
-      {items.map((item, index) => {
-        const isOpen = open === index
-
-        return (
-          <li
-            key={item.question}
-            className="border-t border-[#e6e6e6] last:border-b"
+    <Accordion defaultValue={items.length ? ["0"] : []} className="w-full">
+      {items.map((item, index) => (
+        <AccordionItem
+          key={item.question}
+          value={String(index)}
+          className="border-t border-[#e6e6e6] not-last:border-b-0 last:border-b"
+        >
+          <AccordionTrigger
+            className="rounded-none border-0 py-0 pb-(--faq-pb) font-medium hover:no-underline focus-visible:ring-0 aria-expanded:pb-0 [&_[data-slot=accordion-trigger-icon]]:hidden"
+            style={{
+              ...itemPad,
+              paddingTop: fluid(28, 32),
+              gap: fluid(16, 20),
+            }}
           >
-            <button
-              type="button"
-              className="flex w-full items-start justify-between text-left no-underline"
-              style={{
-                paddingTop: fluid(28, 32),
-                paddingBottom: fluid(28, 32),
-                paddingInline: inset ? fluid(12, 36) : 0,
-                gap: fluid(16, 20),
-              }}
-              aria-expanded={isOpen}
-              onClick={() =>
-                setOpen((current) => (current === index ? -1 : index))
-              }
+            <span
+              className="min-w-0 flex-1 text-[#202020]"
+              style={fluidText(18, 20, 22, 24)}
             >
-              <span
-                className="flex min-w-0 flex-col"
-                style={{ gap: fluid(10, 10) }}
-              >
-                <span
-                  className="font-medium text-[#202020]"
-                  style={fluidText(18, 20, 22, 24)}
-                >
-                  {item.question}
-                </span>
-                {isOpen && item.answer ? (
-                  <span
-                    className="text-[#606060]"
-                    style={fluidText(18, 20, 22, 28)}
-                  >
-                    {item.answer}
-                  </span>
-                ) : null}
+              {item.question}
+            </span>
+            <span className="relative size-[22px] shrink-0">
+              <span className="absolute inset-0 group-aria-expanded/accordion-trigger:hidden">
+                <FaqIcon open={false} />
               </span>
-              <Image
-                src={isOpen ? "/images/faq/minus.svg" : "/images/faq/plus.svg"}
-                alt=""
-                width={22}
-                height={22}
-                unoptimized
-                className="mt-0.5 block size-[22px] max-w-none shrink-0"
-              />
-            </button>
-          </li>
-        )
-      })}
-    </ul>
+              <span className="absolute inset-0 hidden group-aria-expanded/accordion-trigger:block">
+                <FaqIcon open />
+              </span>
+            </span>
+          </AccordionTrigger>
+          {item.answer ? (
+            <AccordionContent
+              className="pb-0 text-[#606060]"
+              style={{
+                ...itemPad,
+                paddingTop: fluid(10, 10),
+                paddingBottom: "var(--faq-pb)",
+                ...fluidText(18, 20, 22, 28),
+              }}
+            >
+              {item.answer}
+            </AccordionContent>
+          ) : null}
+        </AccordionItem>
+      ))}
+    </Accordion>
   )
 }

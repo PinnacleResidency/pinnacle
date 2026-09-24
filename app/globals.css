@@ -139,6 +139,13 @@
   h6 {
     font-weight: 500;
     }
+  a {
+    transition-property: opacity, color;
+    transition-duration: 200ms;
+    }
+  a:hover {
+    opacity: 0.7;
+    }
   ::selection {
     background: var(--primary);
     color: var(--primary-foreground);
