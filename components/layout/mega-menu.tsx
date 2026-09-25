@@ -50,7 +50,7 @@ export function StrategyCard({
       <div
         className="absolute inset-x-0 bottom-0 flex flex-col items-start"
         style={{
-          padding: mobile ? 24 : fluid(20, 32),
+          padding: mobile ? "0 20px 50px" : fluid(20, 32),
           gap: mobile ? 32 : fluid(16, 24),
         }}
       >
@@ -73,7 +73,7 @@ export function StrategyCard({
           href="/book"
           onClick={() => closeAfterClick(onNavigate)}
           className="inline-flex items-center gap-2.5 border-b border-solid border-white font-medium text-white"
-          style={fluidText(16, 18, 20, 24)}
+          style={mobile ? fluidText(18, 18, 24, 24) : fluidText(16, 18, 20, 24)}
         >
           Get Started
           <Image

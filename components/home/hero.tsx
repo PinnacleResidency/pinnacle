@@ -35,7 +35,6 @@ function PathBadge() {
   return (
     <span
       className="inline-flex shrink-0 items-center justify-center rounded-[10px] bg-[#72bf00] p-1.5 align-middle"
-      style={{ marginLeft: fluid(4, 8) }}
       aria-hidden
     >
       <Image
@@ -178,14 +177,20 @@ export function Hero() {
                   maxWidth: fluid(366, 560),
                 }}
               >
-                <span className="text-[#202020] lg:inline-flex lg:items-center">
-                  Your Clear{" "}
-                  <span className="inline-flex items-center whitespace-nowrap align-middle">
-                    Path
-                    <PathBadge />
-                  </span>
-                </span>{" "}
-                <span className="text-[#707070]">to US Permanent Residency</span>
+                <span className="text-[#202020]">Your Clear </span>
+                <span
+                  className="inline-flex items-center whitespace-nowrap align-middle"
+                  style={{ gap: fluid(8, 8) }}
+                >
+                  <span className="text-[#202020]">Path</span>
+                  <PathBadge />
+                  <span className="text-[#707070] lg:hidden">to US</span>
+                </span>
+                <span className="text-[#707070]">
+                  <span className="hidden lg:inline"> to US</span>
+                  {" "}
+                  Permanent Residency
+                </span>
               </h1>
               <p className="w-full text-[#404040]" style={fluidText(20, 22, 24, 28)}>
                 We guide professionals, researchers, and entrepreneurs through

@@ -1,11 +1,12 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { Logo } from "@/components/branding/logo"
+import { BookStrategyButton } from "@/components/cta/book-strategy-button"
 import { GetStartedButton } from "@/components/cta/get-started-button"
 import { MegaMenu, StrategyCard } from "@/components/layout/mega-menu"
 import {
@@ -78,6 +79,10 @@ function CloseIcon() {
   )
 }
 
+function mobileMenuLabel(id: MegaMenuId, label: string) {
+  return id === "about" ? "About Us" : label
+}
+
 function MobileNav() {
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<MegaMenuId | "root">("root")
@@ -88,36 +93,32 @@ function MobileNav() {
     if (!next) setView("root")
   }
 
+  function closeAfterNavigate() {
+    window.setTimeout(() => handleOpenChange(false), 0)
+  }
+
+  const itemType = {
+    ...fluidText(32, 32, 32, 32),
+    letterSpacing: "-0.02em",
+  }
+
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetTrigger className="inline-flex size-8 items-center justify-center bg-transparent lg:hidden">
+      <SheetTrigger className="inline-flex size-8 cursor-pointer items-center justify-center bg-transparent lg:hidden">
         <span className="sr-only">Open menu</span>
         <HamburgerIcon />
       </SheetTrigger>
       <SheetContent
         side="right"
         showCloseButton={false}
-        className="h-full w-full max-w-none gap-0 border-none bg-white p-0 data-[side=right]:w-full sm:max-w-none"
+        className="h-full w-full max-w-none gap-0 overflow-y-auto border-none bg-white p-0 opacity-100 data-open:opacity-100 data-[side=right]:w-full sm:max-w-none"
       >
-        <SheetHeader
-          className="flex flex-row items-center justify-between px-5 py-0"
-          style={{ height: fluid(48, 64) }}
-        >
+        <SheetHeader className="flex h-14 shrink-0 flex-row items-center justify-between border-b border-solid border-[#d0d0d0] bg-white/80 px-5 py-0 backdrop-blur-[7.5px]">
           <SheetTitle className="sr-only">Menu</SheetTitle>
-          {view === "root" ? (
+          <span onClick={() => handleOpenChange(false)}>
             <Logo />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setView("root")}
-              className="inline-flex items-center gap-2 bg-transparent text-[#202020]"
-              style={fluidText(16, 16, 20, 20)}
-            >
-              <ChevronLeftIcon className="size-5" />
-              Back
-            </button>
-          )}
-          <SheetClose className="inline-flex size-8 items-center justify-center bg-transparent text-[#202020]">
+          </span>
+          <SheetClose className="inline-flex size-8 cursor-pointer items-center justify-center bg-transparent text-[#0d3708]">
             <span className="sr-only">Close menu</span>
             <CloseIcon />
           </SheetClose>
@@ -125,56 +126,83 @@ function MobileNav() {
 
         {drilldown ? (
           <>
-            <nav className="flex flex-col gap-6 px-5 pt-8">
-              <p
-                className="font-medium text-[#124a0a]"
-                style={fluidText(18, 18, 20, 20)}
-              >
-                {drilldown.label}
-              </p>
+            <button
+              type="button"
+              onClick={() => setView("root")}
+              className="inline-flex w-fit cursor-pointer items-start self-start bg-transparent px-6 text-[#404040]"
+              style={{
+                ...fluidText(18, 18, 20, 20),
+                paddingTop: 44,
+                gap: 4,
+              }}
+            >
+              <Image
+                src="/images/nav/angle-left.svg"
+                alt=""
+                width={18}
+                height={18}
+                unoptimized
+                className="mt-px block size-[18px] max-w-none shrink-0"
+              />
+              Back
+            </button>
+            <nav className="flex flex-col items-start px-6 pt-10" style={{ gap: 40 }}>
               {drilldown.items.map((item) => (
-                <SheetClose
+                <Link
                   key={item.label}
-                  nativeButton={false}
-                  render={<Link href={item.href} />}
-                  className="text-left text-[#606060]"
-                  style={fluidText(18, 18, 20, 20)}
+                  href={item.href}
+                  onClick={closeAfterNavigate}
+                  className="inline-flex items-center text-black"
+                  style={{ ...itemType, gap: 12 }}
                 >
                   {item.label}
-                </SheetClose>
+                  <Image
+                    src="/images/nav/arrow-up-right-32.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                    unoptimized
+                    className="block size-8 max-w-none shrink-0"
+                  />
+                </Link>
               ))}
             </nav>
-            {drilldown.showCard ? (
-              <div className="mt-auto bg-[#fff9ed] px-2.5 py-[25px]">
-                <StrategyCard
-                  variant="mobile"
-                  onNavigate={() => handleOpenChange(false)}
-                />
-              </div>
-            ) : (
-              <div className="mt-auto px-5 py-8">
-                <GetStartedButton className="w-full" />
-              </div>
-            )}
+            <div className="mt-auto flex min-h-[500px] items-center justify-center bg-[#fff9ed] px-2.5 py-[25px]">
+              <StrategyCard
+                variant="mobile"
+                onNavigate={closeAfterNavigate}
+              />
+            </div>
           </>
         ) : (
           <>
-            <nav className="flex flex-col gap-8 px-5 pt-8">
+            <nav className="flex w-full flex-col px-6 pt-16" style={{ gap: 40 }}>
               {menus.map((menu) => (
                 <button
                   key={menu.id}
                   type="button"
                   onClick={() => setView(menu.id)}
-                  className="flex w-full items-center justify-between bg-transparent text-left font-medium text-[#124a0a]"
-                  style={fluidText(18, 18, 20, 20)}
+                  className="flex w-full cursor-pointer items-center justify-between bg-transparent text-left text-black"
+                  style={itemType}
                 >
-                  {menu.label}
-                  <ChevronRightIcon className="size-5 text-[#606060]" />
+                  {mobileMenuLabel(menu.id, menu.label)}
+                  <Image
+                    src="/images/nav/angle-right.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    unoptimized
+                    className="block size-6 max-w-none shrink-0"
+                  />
                 </button>
               ))}
             </nav>
-            <div className="mt-auto px-5 py-8">
-              <GetStartedButton className="w-full" />
+            <div
+              className="mt-auto flex justify-center"
+              style={{ paddingBottom: 48 }}
+              onClick={closeAfterNavigate}
+            >
+              <BookStrategyButton />
             </div>
           </>
         )}
