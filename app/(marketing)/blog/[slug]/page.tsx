@@ -2,10 +2,11 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { BlogArticlePage } from "@/components/blog/article"
-import { blogArticle, blogPosts, getBlogPost } from "@/lib/blog"
+import { getBlogPost, getBlogSlugs } from "@/lib/blog"
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }))
+export async function generateStaticParams() {
+  const slugs = await getBlogSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
@@ -14,12 +15,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const post = getBlogPost(slug)
-  if (!post) return {}
+  const data = await getBlogPost(slug)
+  if (!data) return {}
 
   return {
-    title: `${post.title} | Pinnacle Residency`,
-    description: blogArticle.intro,
+    title: `${data.post.title} | Pinnacle Residency`,
+    description: data.article.intro,
   }
 }
 
@@ -29,8 +30,8 @@ export default async function Page({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const post = getBlogPost(slug)
-  if (!post) notFound()
+  const data = await getBlogPost(slug)
+  if (!data) notFound()
 
-  return <BlogArticlePage post={post} article={blogArticle} />
+  return <BlogArticlePage post={data.post} article={data.article} />
 }

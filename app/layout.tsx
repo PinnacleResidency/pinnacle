@@ -4,6 +4,7 @@ import { Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { SmoothScroll } from "@/components/layout/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SanityLive } from "@/lib/sanity/live"
 import { cn } from "@/lib/utils"
 
 const fontMono = Geist_Mono({
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <ThemeProvider>
           <SmoothScroll>{children}</SmoothScroll>
+          <SanityLive />
         </ThemeProvider>
       </body>
     </html>

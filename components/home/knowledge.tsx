@@ -2,10 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { BookStrategyButton } from "@/components/cta/book-strategy-button"
-import { featuredBlogPosts } from "@/lib/blog"
+import { getFeaturedBlogPosts } from "@/lib/blog"
 import { fluid, fluidText } from "@/lib/fluid"
 
-export function Knowledge() {
+export async function Knowledge() {
+  const featuredBlogPosts = await getFeaturedBlogPosts()
+
   return (
     <section id="knowledge" className="bg-[#fffaef]">
       <div

@@ -1,4 +1,14 @@
 import type { FaqItem } from "@/lib/pathways"
+import { urlFor } from "@/lib/sanity/image"
+import { sanityFetch } from "@/lib/sanity/live"
+import {
+  BLOG_COUNT_QUERY,
+  BLOG_FEATURED_QUERY,
+  BLOG_LATEST_QUERY,
+  BLOG_POST_QUERY,
+  BLOG_SLUGS_QUERY,
+  blogPageQuery,
+} from "@/lib/sanity/queries"
 
 export type BlogPost = {
   slug: string
@@ -11,6 +21,7 @@ export type BlogPost = {
 }
 
 export type BlogArticleSection = {
+  _key?: string
   heading: string
   paragraphs: readonly string[]
 }
@@ -96,6 +107,118 @@ const seedPosts = [
 export const BLOG_PAGE_SIZE = 9
 export const BLOG_TOTAL_PAGES = 13
 
+type SanityCoverImage = {
+  alt?: string | null
+  asset?: {
+    url?: string | null
+    metadata?: {
+      dimensions?: {
+        width?: number | null
+        height?: number | null
+      } | null
+    } | null
+  } | null
+}
+
+type SanityBlogListItem = {
+  title?: string | null
+  slug?: string | null
+  coverImage?: SanityCoverImage | null
+}
+
+type SanityBlogPost = SanityBlogListItem & {
+  readTime?: string | null
+  publishedOn?: string | null
+  intro?: string | null
+  sections?:
+    | {
+        _key?: string
+        heading?: string | null
+        paragraphs?: (string | null)[] | null
+      }[]
+    | null
+  faqs?:
+    | {
+        _key?: string
+        question?: string | null
+        answer?: string | null
+      }[]
+    | null
+}
+
+async function fetchSanity<T>(load: () => Promise<T>): Promise<T | null> {
+  try {
+    return await load()
+  } catch (error) {
+    console.error("[sanity]", error)
+    return null
+  }
+}
+
+function formatPublishedOn(value?: string | null) {
+  if (!value) return ""
+  const date = new Date(`${value}T00:00:00`)
+  if (Number.isNaN(date.getTime())) return value
+  const day = date.getDate()
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th"
+  const month = date.toLocaleString("en-GB", { month: "long" })
+  return `${day}${suffix} ${month}, ${date.getFullYear()}`
+}
+
+function toBlogPost(item: SanityBlogListItem): BlogPost | null {
+  if (!item.slug || !item.title) return null
+
+  const cover = item.coverImage
+  const image = cover?.asset
+    ? urlFor(cover as Parameters<typeof urlFor>[0]).width(2400).url()
+    : images.capitol.image
+
+  return {
+    slug: item.slug,
+    href: `/blog/${item.slug}`,
+    image,
+    imageAlt: cover?.alt || item.title,
+    imageWidth: cover?.asset?.metadata?.dimensions?.width || images.capitol.imageWidth,
+    imageHeight:
+      cover?.asset?.metadata?.dimensions?.height || images.capitol.imageHeight,
+    title: item.title,
+  }
+}
+
+function toBlogArticle(item: SanityBlogPost): BlogArticle {
+  return {
+    readTime: item.readTime || "5-minute read",
+    publishedOn: formatPublishedOn(item.publishedOn),
+    intro: item.intro || "",
+    sections: (item.sections ?? [])
+      .filter((section): section is { heading: string; paragraphs?: (string | null)[] | null; _key?: string } =>
+        Boolean(section?.heading)
+      )
+      .map((section) => ({
+        _key: section._key,
+        heading: section.heading,
+        paragraphs: (section.paragraphs ?? []).filter(
+          (paragraph): paragraph is string => Boolean(paragraph)
+        ),
+      })),
+    faqs: (item.faqs ?? [])
+      .filter((faq): faq is { question: string; answer?: string | null; _key?: string } =>
+        Boolean(faq?.question)
+      )
+      .map((faq) => ({
+        question: faq.question,
+        answer: faq.answer ?? "",
+      })),
+  }
+}
+
 function toPost(
   seed: (typeof seedPosts)[number],
   slug: string
@@ -134,13 +257,84 @@ export function parseBlogPage(value?: string) {
   if (value === undefined) return 1
   if (!/^\d+$/.test(value)) return null
   const page = Number(value)
-  if (page < 1 || page > BLOG_TOTAL_PAGES) return null
+  if (page < 1) return null
   return page
 }
 
-export function getBlogPage(page: number) {
+export async function getBlogPage(page: number) {
   const start = (page - 1) * BLOG_PAGE_SIZE
-  return blogPosts.slice(start, start + BLOG_PAGE_SIZE)
+  const end = start + BLOG_PAGE_SIZE
+
+  const result = await fetchSanity(async () => {
+    const [{ data: posts }, { data: total }] = await Promise.all([
+      sanityFetch({ query: blogPageQuery(start, end), stega: false }),
+      sanityFetch({ query: BLOG_COUNT_QUERY, stega: false }),
+    ])
+    return {
+      posts: (posts ?? []) as SanityBlogListItem[],
+      total: Number(total ?? 0),
+    }
+  })
+
+  if (!result || result.total === 0) {
+    return {
+      posts: blogPosts.slice(start, end),
+      totalPages: BLOG_TOTAL_PAGES,
+    }
+  }
+
+  return {
+    posts: result.posts
+      .map((post) => toBlogPost(post))
+      .filter((post): post is BlogPost => post !== null),
+    totalPages: Math.max(1, Math.ceil(result.total / BLOG_PAGE_SIZE)),
+  }
+}
+
+export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
+  const featured = await fetchSanity(async () => {
+    const { data } = await sanityFetch({
+      query: BLOG_FEATURED_QUERY,
+      stega: false,
+    })
+    return (data ?? []) as SanityBlogListItem[]
+  })
+
+  const latest =
+    featured && featured.length > 0
+      ? featured
+      : await fetchSanity(async () => {
+          const { data } = await sanityFetch({
+            query: BLOG_LATEST_QUERY,
+            stega: false,
+          })
+          return (data ?? []) as SanityBlogListItem[]
+        })
+
+  const posts = (latest ?? [])
+    .map((post) => toBlogPost(post))
+    .filter((post): post is BlogPost => post !== null)
+
+  return posts.length > 0 ? posts : featuredBlogPosts
+}
+
+export async function getBlogSlugs(): Promise<string[]> {
+  const slugs = await fetchSanity(async () => {
+    const { data } = await sanityFetch({
+      query: BLOG_SLUGS_QUERY,
+      perspective: "published",
+      stega: false,
+    })
+    return (data ?? []) as { slug?: string | null }[]
+  })
+
+  if (slugs && slugs.length > 0) {
+    return slugs
+      .map((item) => item.slug)
+      .filter((slug): slug is string => Boolean(slug))
+  }
+
+  return blogPosts.map((post) => post.slug)
 }
 
 export function blogPageHref(page: number) {
@@ -207,8 +401,26 @@ export const blogArticle: BlogArticle = {
   ],
 }
 
-export function getBlogPost(slug: string) {
-  return blogPosts.find((post) => post.slug === slug)
+export async function getBlogPost(slug: string) {
+  const data = await fetchSanity(async () => {
+    const { data: post } = await sanityFetch({
+      query: BLOG_POST_QUERY,
+      params: { slug },
+      stega: false,
+    })
+    return (post ?? null) as SanityBlogPost | null
+  })
+
+  if (data) {
+    const post = toBlogPost(data)
+    if (post) {
+      return { post, article: toBlogArticle(data) }
+    }
+  }
+
+  const mock = blogPosts.find((post) => post.slug === slug)
+  if (!mock) return null
+  return { post: mock, article: blogArticle }
 }
 
 export function blogPaginationItems(current: number, total: number) {

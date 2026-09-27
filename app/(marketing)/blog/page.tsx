@@ -19,5 +19,8 @@ export default async function Page({
   const page = parseBlogPage(pageParam)
   if (page === null) notFound()
 
-  return <BlogPage posts={getBlogPage(page)} page={page} />
+  const { posts, totalPages } = await getBlogPage(page)
+  if (page > totalPages) notFound()
+
+  return <BlogPage posts={posts} page={page} totalPages={totalPages} />
 }

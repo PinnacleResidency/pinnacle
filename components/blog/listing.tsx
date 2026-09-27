@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import { fluid, fluidText } from "@/lib/fluid"
 import {
-  BLOG_TOTAL_PAGES,
   blogPageHref,
   blogPaginationItems,
   type BlogPost,
@@ -19,11 +18,13 @@ const desktopGradient =
 export function BlogListing({
   posts,
   page,
+  totalPages,
 }: {
   posts: readonly BlogPost[]
   page: number
+  totalPages: number
 }) {
-  const items = blogPaginationItems(page, BLOG_TOTAL_PAGES)
+  const items = blogPaginationItems(page, totalPages)
 
   return (
     <section

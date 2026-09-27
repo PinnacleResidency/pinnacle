@@ -19,7 +19,7 @@ export function BlogArticleBody({ article }: { article: BlogArticle }) {
 
         {article.sections.map((section) => (
           <div
-            key={section.heading}
+            key={section._key ?? section.heading}
             className="flex w-full flex-col"
             style={{ gap: fluid(12, 12) }}
           >
