@@ -2,7 +2,12 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { BlogPage } from "@/components/blog/page"
-import { getBlogPage, parseBlogPage } from "@/lib/blog"
+import {
+  BLOG_PAGE_SIZE_MOBILE,
+  blogPageCount,
+  getBlogPosts,
+  parseBlogPage,
+} from "@/lib/blog"
 
 export const metadata: Metadata = {
   title: "Blog | Pinnacle Residency",
@@ -19,8 +24,8 @@ export default async function Page({
   const page = parseBlogPage(pageParam)
   if (page === null) notFound()
 
-  const { posts, totalPages } = await getBlogPage(page)
-  if (page > totalPages) notFound()
+  const posts = await getBlogPosts()
+  if (page > blogPageCount(posts.length, BLOG_PAGE_SIZE_MOBILE)) notFound()
 
-  return <BlogPage posts={posts} page={page} totalPages={totalPages} />
+  return <BlogPage posts={posts} page={page} />
 }

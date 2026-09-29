@@ -3,7 +3,7 @@ import Link from "next/link"
 
 import { BookStrategyButton } from "@/components/cta/book-strategy-button"
 import { StampCard } from "@/components/home/stamp-card"
-import { fluid, fluidText } from "@/lib/fluid"
+import { fluid, fluidText, fluidTextBelow } from "@/lib/fluid"
 
 const stats = [
   {
@@ -63,10 +63,10 @@ function HeroStats() {
               gap: fluid(4, 6),
             }}
           >
-            <p className="font-medium text-[#202020]" style={fluidText(16, 20, 20, 26)}>
+            <p className="font-medium text-[#202020]" style={fluidTextBelow(16, 20, 20, 26)}>
               {stat.value}
             </p>
-            <p className="text-[#808080]" style={fluidText(12, 18, 14, 22)}>
+            <p className="text-[#808080]" style={fluidTextBelow(12, 18, 14, 22)}>
               {stat.lines.map((line) => (
                 <span key={line} className="block">
                   {line}

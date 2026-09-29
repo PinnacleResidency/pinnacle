@@ -20,12 +20,17 @@ export function FaqGroups() {
             className="flex w-full flex-col"
             style={{ gap: fluid(12, 12) }}
           >
-            <h2
-              className="w-full font-medium text-[#707070]"
-              style={fluidText(28, 40, 32, 40)}
-            >
-              {group.heading}
-            </h2>
+            <div className="flex w-full flex-col" style={{ gap: fluid(8, 8) }}>
+              <h2
+                className="w-full font-medium text-[#707070]"
+                style={fluidText(28, 40, 32, 40)}
+              >
+                {group.heading}
+              </h2>
+              <p className="w-full text-[#808080]" style={fluidText(18, 20, 24, 26)}>
+                {group.description}
+              </p>
+            </div>
             <FaqList items={group.items} inset />
           </div>
         ))}

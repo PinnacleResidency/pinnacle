@@ -2,12 +2,11 @@ import type { FaqItem } from "@/lib/pathways"
 import { urlFor } from "@/lib/sanity/image"
 import { sanityFetch } from "@/lib/sanity/live"
 import {
-  BLOG_COUNT_QUERY,
   BLOG_FEATURED_QUERY,
   BLOG_LATEST_QUERY,
+  BLOG_LISTING_QUERY,
   BLOG_POST_QUERY,
   BLOG_SLUGS_QUERY,
-  blogPageQuery,
 } from "@/lib/sanity/queries"
 
 export type BlogPost = {
@@ -57,8 +56,18 @@ const images = {
 
 const seedPosts = [
   {
+    slug: "eb-2-niw-backlog",
+    title: "The EB-2 NIW Backlog Nobody's Talking About, and What Exactly is Going On",
+    ...images.passport,
+  },
+  {
     slug: "uscis-ai-adjudicate",
     title: "USCIS Is Using AI to Adjudicate Cases. Here's What That Means for Your RFE",
+    ...images.capitol,
+  },
+  {
+    slug: "eb-1a-discretionary-review",
+    title: "EB-1A's Big Shift: From Discretionary to Non-Discretionary Review",
     ...images.capitol,
   },
   {
@@ -68,14 +77,9 @@ const seedPosts = [
     ...images.notice,
   },
   {
-    slug: "eb-1a-or-eb-2-niw",
-    title: "EB-1A or EB-2 NIW: How to Choose the Right Pathway for Your Profile",
+    slug: "rfe-risks-updated-policies",
+    title: "Understanding Possible RFE Risks Under The Recently Updated USCIS Policies",
     ...images.passport,
-  },
-  {
-    slug: "eb-1a-discretionary-review",
-    title: "EB-1A's Big Shift: From Discretionary to Non-Discretionary Review",
-    ...images.capitol,
   },
   {
     slug: "eb-1a-vs-eb-2-niw-approval-gap",
@@ -83,29 +87,24 @@ const seedPosts = [
     ...images.notice,
   },
   {
-    slug: "eb-2-niw-backlog",
-    title: "The EB-2 NIW Backlog Nobody's Talking About, and What Exactly Is Going On",
-    ...images.passport,
-  },
-  {
-    slug: "common-petition-mistakes",
-    title: "Common Mistakes That May Weaken Your EB-1A and EB-2 NIW Petitions",
-    ...images.capitol,
-  },
-  {
     slug: "strong-recommendation-letters",
-    title: "What Actually Makes a Strong Recommendation Letter for Your Petition",
+    title: "What Makes a Strong Recommendation Letter for Your Petition",
     ...images.notice,
   },
   {
-    slug: "rfe-risks-updated-policies",
-    title: "Understanding Possible RFE Risks Under The Newly Updated USCIS Policies",
+    slug: "common-petition-mistakes",
+    title: "Common Mistakes That Weaken EB-1A and EB-2 NIW Petitions",
+    ...images.capitol,
+  },
+  {
+    slug: "eb-1a-or-eb-2-niw",
+    title: "EB-1A vs EB-2 NIW: How to Choose the Right Pathway for Your Profile",
     ...images.passport,
   },
 ] as const
 
-export const BLOG_PAGE_SIZE = 9
-export const BLOG_TOTAL_PAGES = 13
+export const BLOG_PAGE_SIZE_MOBILE = 3
+export const BLOG_PAGE_SIZE_DESKTOP = 9
 
 type SanityCoverImage = {
   alt?: string | null
@@ -239,18 +238,8 @@ export const featuredBlogPosts = seedPosts
   .slice(0, 3)
   .map((seed) => toPost(seed, seed.slug))
 
-/**
- * Mock listing until the headless CMS is connected.
- * Repeats the designed articles across 13 pages so pagination matches Figma.
- */
-export const blogPosts: BlogPost[] = Array.from(
-  { length: BLOG_TOTAL_PAGES * BLOG_PAGE_SIZE },
-  (_, index) => {
-    const seed = seedPosts[index % seedPosts.length]
-    const page = Math.floor(index / BLOG_PAGE_SIZE) + 1
-    const slug = page === 1 ? seed.slug : `${seed.slug}-p${page}`
-    return toPost(seed, slug)
-  }
+export const blogPosts: BlogPost[] = seedPosts.map((seed) =>
+  toPost(seed, seed.slug)
 )
 
 export function parseBlogPage(value?: string) {
@@ -261,34 +250,24 @@ export function parseBlogPage(value?: string) {
   return page
 }
 
-export async function getBlogPage(page: number) {
-  const start = (page - 1) * BLOG_PAGE_SIZE
-  const end = start + BLOG_PAGE_SIZE
+export function blogPageCount(total: number, pageSize: number) {
+  return Math.max(1, Math.ceil(Math.max(total, 0) / pageSize))
+}
 
+export async function getBlogPosts(): Promise<BlogPost[]> {
   const result = await fetchSanity(async () => {
-    const [{ data: posts }, { data: total }] = await Promise.all([
-      sanityFetch({ query: blogPageQuery(start, end), stega: false }),
-      sanityFetch({ query: BLOG_COUNT_QUERY, stega: false }),
-    ])
-    return {
-      posts: (posts ?? []) as SanityBlogListItem[],
-      total: Number(total ?? 0),
-    }
+    const { data } = await sanityFetch({
+      query: BLOG_LISTING_QUERY,
+      stega: false,
+    })
+    return (data ?? []) as SanityBlogListItem[]
   })
 
-  if (!result || result.total === 0) {
-    return {
-      posts: blogPosts.slice(start, end),
-      totalPages: BLOG_TOTAL_PAGES,
-    }
-  }
+  const posts = (result ?? [])
+    .map((post) => toBlogPost(post))
+    .filter((post): post is BlogPost => post !== null)
 
-  return {
-    posts: result.posts
-      .map((post) => toBlogPost(post))
-      .filter((post): post is BlogPost => post !== null),
-    totalPages: Math.max(1, Math.ceil(result.total / BLOG_PAGE_SIZE)),
-  }
+  return posts.length > 0 ? posts : blogPosts
 }
 
 export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {

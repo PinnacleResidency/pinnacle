@@ -6,34 +6,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { homeFaqs } from "@/lib/faq"
 import { fluid, fluidText } from "@/lib/fluid"
 import type { FaqItem } from "@/lib/pathways"
 
 export type { FaqItem }
-
-const homeItems: readonly FaqItem[] = [
-  {
-    question: "Do I need a job offer or a US sponsor for EB-1A or EB-2 NIW?",
-    answer:
-      "No. Both EB-1A and EB-2 NIW allow you to self-petition, meaning you do not need an employer sponsor, job offer, or labor certification (PERM) to apply.",
-  },
-  {
-    question: "What is inside the complete self-petition DIY guide?",
-    answer: "",
-  },
-  {
-    question: "What happens if my profile isn't strong enough right now?",
-    answer: "",
-  },
-  {
-    question: "Do I need to be in the United States already to start this process?",
-    answer: "",
-  },
-  {
-    question: "How do I get started on my green card journey with Pinnacle?",
-    answer: "",
-  },
-]
 
 function FaqIcon({ open }: { open: boolean }) {
   return (
@@ -49,7 +26,7 @@ function FaqIcon({ open }: { open: boolean }) {
 }
 
 export function FaqList({
-  items = homeItems,
+  items = homeFaqs,
   inset = false,
 }: {
   items?: readonly FaqItem[]
@@ -69,7 +46,7 @@ export function FaqList({
           className="border-t border-[#e6e6e6] not-last:border-b-0 last:border-b"
         >
           <AccordionTrigger
-            className="rounded-none border-0 py-0 pb-(--faq-pb) font-medium hover:no-underline focus-visible:ring-0 aria-expanded:pb-0 [&_[data-slot=accordion-trigger-icon]]:hidden"
+            className="cursor-pointer rounded-none border-0 py-0 pb-(--faq-pb) font-medium hover:no-underline focus-visible:ring-0 aria-expanded:pb-0 [&_[data-slot=accordion-trigger-icon]]:hidden"
             style={{
               ...itemPad,
               paddingTop: fluid(28, 32),

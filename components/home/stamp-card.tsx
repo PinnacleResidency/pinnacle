@@ -47,6 +47,8 @@ export function StampCard({
           width={367}
           height={500}
           unoptimized
+          preload={preload}
+          loading={preload ? "eager" : undefined}
           className="pointer-events-none block max-w-none"
           style={{ width: STAMP_WIDTH, height: STAMP_HEIGHT }}
         />

@@ -5,15 +5,13 @@ import type { BlogPost } from "@/lib/blog"
 export function BlogPage({
   posts,
   page,
-  totalPages,
 }: {
   posts: readonly BlogPost[]
   page: number
-  totalPages: number
 }) {
   return (
     <>
-      <BlogListing posts={posts} page={page} totalPages={totalPages} />
+      <BlogListing posts={posts} page={page} />
       <BlogCta />
     </>
   )

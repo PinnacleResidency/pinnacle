@@ -15,8 +15,8 @@ export function Logo({ className }: { className?: string }) {
         alt=""
         width={149}
         height={24}
-        className="max-w-none"
-        style={{ height: 24, width: fluid(112, 149) }}
+        className="h-auto max-w-none"
+        style={{ width: fluid(112, 149), height: "auto" }}
         unoptimized
         priority
       />

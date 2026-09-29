@@ -62,7 +62,7 @@ export function SiteFooter() {
         <p
           className="text-[#606060]"
           style={{
-            ...fluidText(14, 14, 18, 18),
+            ...fluidText(16, 14, 20, 18),
             marginTop: fluid(24, 40),
           }}
         >
@@ -91,7 +91,7 @@ export function SiteFooter() {
                 key={item.label}
                 href={item.href}
                 className="text-[#606060] underline decoration-solid underline-offset-2"
-                style={fluidText(18, 18, 20, 22)}
+                style={fluidText(16, 18, 20, 22)}
               >
                 {item.label}
               </Link>
@@ -99,7 +99,7 @@ export function SiteFooter() {
           </div>
           <p
             className="text-[#606060] lg:order-1"
-            style={fluidText(18, 18, 20, 22)}
+            style={fluidText(16, 18, 20, 22)}
           >
             ©2026 Pinnacle Residency. All rights reserved.
           </p>

@@ -27,14 +27,12 @@ export const BLOG_COUNT_QUERY = defineQuery(`
   count(*[_type == "post" && defined(slug.current)])
 `)
 
-export function blogPageQuery(start: number, end: number) {
-  return defineQuery(`
-    *[_type == "post" && defined(slug.current)]
-    | order(publishedOn desc) [${start}...${end}] {
-      ${listingFields}
-    }
-  `)
-}
+export const BLOG_LISTING_QUERY = defineQuery(`
+  *[_type == "post" && defined(slug.current)]
+  | order(publishedOn desc) {
+    ${listingFields}
+  }
+`)
 
 export const BLOG_FEATURED_QUERY = defineQuery(`
   *[_type == "post" && defined(slug.current) && featured == true]
